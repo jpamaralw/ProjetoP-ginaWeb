@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Produtos</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Certifique-se de que o caminho está correto -->
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <h1>Lista de Produtos</h1>
+    <input type="text" id="search" onkeyup="filtrarProdutos()" placeholder="Filtrar produtos por nome...">
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Preço</th>
+            </tr>
+        </thead>
+        <tbody id="produtos-lista">
+            <!-- Os dados dos produtos serão inseridos aqui pelo JavaScript -->
+        </tbody>
+    </table>
+</body>
+</html>
