@@ -3,25 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Produtos</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Certifique-se de que o caminho está correto -->
-    <script src="script.js" defer></script>
+    <title>Projeto iGut</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Lista de Produtos</h1>
-    <input type="text" id="search" onkeyup="filtrarProdutos()" placeholder="Filtrar produtos por nome...">
+    <div class="container">
+        <h1>Lista / Tabela de Carros</h1>
+        <input type="text" id="filtro" placeholder="Digite para filtrar produtos..." />
+        <table id="tabela-produtos">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- informação do prod insere aqui por js   -->
+            </tbody>
+        </table>
+        <div id="resultado">
+            <!-- informação do prod mostra aqui -->
+        </div>
+    </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Preço</th>
-            </tr>
-        </thead>
-        <tbody id="produtos-lista">
-            <!-- Os dados dos produtos serão inseridos aqui pelo JavaScript -->
-        </tbody>
-    </table>
+    <script src="script.js"></script>
 </body>
 </html>

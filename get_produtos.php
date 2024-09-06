@@ -1,40 +1,30 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+header('Content-Type: application/json');
+$host = "localhost";
+$db   = "tabela";
+$user = "root";
+$pass = "";
 
-// Configurações de conexão com o banco de dados
-$servername = "localhost";
-$username = "root"; // Ajuste o nome de usuário conforme necessário
-$password = ""; // Ajuste a senha conforme necessário
-$dbname = "tabela"; // Nome do banco de dados
+// conecta banco de dados
+$con = new mysqli($host, $user, $pass, $db);
 
-// Cria uma conexão com o banco de dados
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Verifica a conexão
-if ($conn->connect_error) {
-    die("Falha na conexão com o banco de dados: " . $conn->connect_error);
+if ($con->connect_error) {
+    die(json_encode(['error' => 'Falha na conexão: ' . $con->connect_error]));
 }
 
-// Consulta SQL para buscar produtos
-$sql = "SELECT id, nome, preco FROM novos"; // 'novos' é o nome da tabela
-$result = $conn->query($sql);
+// seleciona e puxa lista
+$query = "SELECT id, nome, preco FROM novos";
 
-// Cria um array para armazenar os produtos
-$produtos = array();
-
-// Se houver resultados, armazena no array
-if ($result && $result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        $produtos[] = $row;
-    }
+$result = $con->query($query);
+// verifica
+if ($result) {
+    $produtos = $result->fetch_all(MYSQLI_ASSOC);
+    echo json_encode($produtos); // Retorna os dados no formato JSON
 } else {
-    echo "Nenhum produto encontrado.";
+    echo json_encode(['error' => 'Erro na consulta: ' . $con->error]);
 }
-
-// Retorna os dados em formato JSON
-echo json_encode($produtos);
-
-// Fecha a conexão com o banco de dados
-$conn->close();
+// retornar e fechar
+$result->free();
+$con->close();
 ?>
+

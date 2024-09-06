@@ -1,46 +1,52 @@
-// Função para buscar produtos do servidor usando Fetch API
-function buscarProdutos() {
-    fetch('get_produtos.php') // Faz a requisição ao arquivo PHP
-        .then(response => response.json()) // Converte a resposta em JSON
-        .then(data => {
-            const tbody = document.getElementById('produtos-lista'); // Seleciona o corpo da tabela
-            tbody.innerHTML = ''; // Limpa o conteúdo da tabela
+document.addEventListener('DOMContentLoaded', function() {
+    const tabelaProdutos = document.getElementById('tabela-produtos').getElementsByTagName('tbody')[0];
+    const filtro = document.getElementById('filtro');
+    const resultado = document.getElementById('resultado');
+    let produtos = []; 
+    //  Fetch API no JS por eu achar mais fácil, porém mandei um exemplo de Fetch no HTML também conforme pedido
+    function carregarProdutos() {
+        fetch('get_produtos.php') // puxa do server
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro na rede ao buscar produtos.');
+                }
+                return response.json(); // retorna 
+            })
+            .then(data => {
+                produtos = data; // atribui
+                exibirProdutos(produtos); // exibe 
 
-            // Verifica se há dados retornados
-            if (data && data.length > 0) {
-                // Percorre cada produto recebido e adiciona uma nova linha na tabela
-                data.forEach(produto => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${novos.id}</td>
-                        <td>${novos.nome}</td>
-                        <td>R$ ${parseFloat(novos.preço).toFixed(2).replace('.', ',')}</td>
-                    `;
-                    tbody.appendChild(row);
+                // filtro enquanto digita conforme pedido
+                filtro.addEventListener('input', function() {
+                    const termoFiltro = filtro.value.toLowerCase(); 
+                    const produtosFiltrados = produtos.filter(produto =>
+                        produto.nome.toLowerCase().includes(termoFiltro) 
+                    );
+                    exibirProdutos(produtosFiltrados); // exibir filtrados
                 });
-            } else {
-                console.error('Nenhum produto encontrado.');
-            }
-        })
-        .catch(error => console.error('Erro ao buscar produtos:', error)); // Tratamento de erros
-}
-
-// Função para filtrar produtos na tabela
-function filtrarProdutos() {
-    const input = document.getElementById('search'); // Seleciona o campo de pesquisa
-    const filter = input.value.toUpperCase(); // Converte o texto de pesquisa para maiúsculas
-    const table = document.getElementById('produtos-lista'); // Seleciona o corpo da tabela
-    const tr = table.getElementsByTagName('tr'); // Obtém todas as linhas da tabela
-
-    // Percorre todas as linhas e verifica se há correspondência com o filtro
-    for (let i = 0; i < tr.length; i++) {
-        const td = tr[i].getElementsByTagName('td')[1]; // Seleciona a célula da coluna "Nome"
-        if (td) {
-            const txtValue = td.textContent || td.innerText; // Obtém o texto da célula
-            tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? '' : 'none'; // Mostra ou esconde a linha
-        }
+            })
+            .catch(error => {
+                console.error('Erro ao buscar produtos:', error);
+                resultado.innerHTML = '<p>Não foi possível carregar produtos. Tente novamente mais tarde.</p>';
+            });
     }
-}
+    function exibirProdutos(produtos) {
+        tabelaProdutos.innerHTML = ''; 
 
-// Chama a função para buscar produtos quando a página carrega
-window.onload = buscarProdutos;
+        if (produtos.length === 0) { 
+            tabelaProdutos.innerHTML = '<tr><td colspan="3">Nenhum produto encontrado.</td></tr>';
+            return;
+        }
+
+        produtos.forEach(produto => {
+            const linha = document.createElement('tr');
+            linha.innerHTML = `
+                <td>${produto.id || 'N/A'}</td>
+                <td>${produto.nome || 'N/A'}</td>
+                <td>R$ ${parseFloat(produto.preco || 0).toFixed(2)}</td>
+            `;
+            tabelaProdutos.appendChild(linha); // Adiciona cada linha de produto na tabela
+        });
+    }
+    carregarProdutos(); // Chama a função para carregar produtos ao carregar a página
+});
